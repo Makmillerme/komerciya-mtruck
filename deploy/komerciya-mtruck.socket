@@ -1,0 +1,10 @@
+[Unit]
+Description=Сокет для генератора комерційних пропозицій M-Truck (on-demand)
+Before=komerciya_mtruck.service
+
+[Socket]
+ListenStream=0.0.0.0:5000
+Accept=no
+
+[Install]
+WantedBy=sockets.target

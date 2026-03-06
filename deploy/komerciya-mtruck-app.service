@@ -1,0 +1,13 @@
+[Unit]
+Description=Генератор PDF комерційних пропозицій M-Truck (backend)
+StopWhenUnneeded=yes
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/apps/komerciya_mtruck
+Environment="PATH=/root/apps/komerciya_mtruck/venv/bin"
+ExecStart=/root/apps/komerciya_mtruck/venv/bin/gunicorn --workers 1 --bind 127.0.0.1:5001 --timeout 120 app_simple:app
+
+[Install]
+WantedBy=multi-user.target

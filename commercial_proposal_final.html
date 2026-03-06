@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Комерційна пропозиція - MAN TGM 15 290</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1D304E 0%, #3b82f6 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 28px;
+            margin-bottom: 6px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+
+        .content {
+            padding: 6px 10px;
+        }
+
+        .vehicle-info {
+            background: #f8f9fa;
+            border-left: 4px solid #1D304E;
+            padding: 6px;
+            margin: 6px 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .vehicle-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 19px;
+            color: #1D304E;
+            margin-bottom: 6px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .vehicle-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 6px;
+            font-weight: 500;
+            letter-spacing: 0.1px;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 6px;
+            margin: 6px 0;
+        }
+
+        .spec-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .spec-card h3 {
+            color: #1D304E;
+            margin-bottom: 4px;
+            font-size: 13px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            border-bottom: 1px solid #f8f9fa;
+            font-size: 11px;
+        }
+
+        .spec-item:last-child {
+            border-bottom: none;
+        }
+
+        .spec-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .spec-value {
+            color: #333;
+            text-align: right;
+        }
+
+        .image-gallery {
+            margin: 4px 0;
+            margin-bottom: 4px;
+        }
+
+        .image-gallery h3 {
+            color: #2c3e50;
+            margin-bottom: 3px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-width: 100%;
+        }
+
+        .image-placeholder {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            height: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 11px;
+            text-align: center;
+            padding: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 4px;
+        }
+
+        .pricing-section {
+            background: linear-gradient(135deg, #1D304E 0%, #3b82f6 100%);
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 4px 0;
+            text-align: center;
+            min-height: 130px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .pricing-section h3 {
+            font-size: 13px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .price-main {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 4px 0;
+        }
+
+        .price-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .price-item {
+            background: rgba(255,255,255,0.1);
+            padding: 6px;
+            border-radius: 4px;
+        }
+
+        .price-item .label {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-bottom: 3px;
+        }
+
+        .price-item .value {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .supplier-info {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 4px 0;
+            margin-top: 4px;
+        }
+
+        /* Розташування футера в кінці сторінки */
+        .page-2-container {
+            min-height: calc(100vh - 30px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-2-content {
+            flex: 1;
+            margin-bottom: 10px; /* Зменшений відступ знизу */
+            padding-top: 5px; /* Зменшений відступ зверху */
+        }
+
+        .page-2-footer {
+            margin-top: auto;
+        }
+
+
+        .supplier-info h3 {
+            color: #1D304E;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            align-items: center;
+            justify-items: center;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #1D304E 0%, #3b82f6 100%);
+            color: white;
+            padding: 4px 12px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 0;
+        }
+
+        .footer-logo img {
+            max-width: 100px;
+            height: auto;
+        }
+
+        /* Спеціальні правила для PDF */
+        @media print {
+            body {
+                background: white;
+                font-size: 12px;
+            }
+            .container {
+                box-shadow: none;
+                max-width: none;
+            }
+            .header {
+                background: linear-gradient(135deg, #1D304E 0%, #2c3e50 100%) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .pricing-section {
+                background: linear-gradient(135deg, #1D304E 0%, #2c3e50 100%) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .footer {
+                background: linear-gradient(135deg, #1D304E 0%, #2c3e50 100%) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .financing-header {
+                background: linear-gradient(135deg, #1D304E 0%, #2c3e50 100%) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            /* Оптимізація іконок для PDF */
+            .lucide-icon {
+                background: linear-gradient(135deg, #1D304E 0%, #2c3e50 100%) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                box-shadow: none !important;
+                padding: 3px !important;
+            }
+            
+            .contact-icon {
+                background: linear-gradient(135deg, #1D304E 0%, #2c3e50 100%) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                box-shadow: none !important;
+                padding: 3px !important;
+            }
+            
+            /* Заголовки з іконками */
+            .spec-card h3,
+            .image-gallery h3,
+            .pricing-section h3,
+            .supplier-info h3 {
+                display: flex !important;
+                align-items: center !important;
+                line-height: 1.2 !important;
+            }
+            
+            /* Контактні елементи */
+            .contact-item {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 8px !important;
+            }
+        }
+
+        /* Правила для розподілу по сторінках */
+        .page-break-before {
+            page-break-before: always;
+        }
+
+        .page-break-after {
+            page-break-after: always;
+        }
+
+        .avoid-break {
+            page-break-inside: avoid;
+        }
+
+        .specs-grid {
+            page-break-inside: avoid;
+        }
+
+        .pricing-section {
+            page-break-inside: avoid;
+        }
+
+        .supplier-info {
+            page-break-inside: avoid;
+        }
+
+        .image-gallery {
+            page-break-inside: avoid;
+        }
+
+        .footer {
+            page-break-inside: avoid;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        /* Lucide Icons стилізація - оптимізовано для PDF */
+        .lucide-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            margin-right: 10px;
+            margin-left: 2px;
+            vertical-align: middle;
+            background: linear-gradient(135deg, #1D304E 0%, #3b82f6 100%);
+            border-radius: 5px;
+            padding: 3px;
+            color: white;
+            flex-shrink: 0;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .lucide-icon svg {
+            width: 14px;
+            height: 14px;
+            stroke-width: 2.5;
+            stroke: currentColor;
+            fill: none;
+            display: block;
+        }
+
+        /* Заголовки з іконками */
+        .spec-card h3,
+        .image-gallery h3,
+        .pricing-section h3,
+        .supplier-info h3 {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.3;
+            letter-spacing: 0.1px;
+        }
+
+        /* Спеціальні стилі для заголовків без іконок */
+        .pricing-section h3,
+        .supplier-info h3 {
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        /* Контактні іконки - уніфіковано */
+        .contact-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(135deg, #1D304E 0%, #3b82f6 100%);
+            border-radius: 5px;
+            color: white;
+            flex-shrink: 0;
+            margin-right: 10px;
+            margin-left: 2px;
+            padding: 3px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .contact-icon svg {
+            width: 14px;
+            height: 14px;
+            stroke-width: 2.5;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        /* Контактні елементи */
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 11px;
+            line-height: 1.3;
+            text-align: center;
+        }
+
+        .contact-item > div:last-child {
+            flex: 1;
+        }
+
+        /* M-TRUCK Financing Block */
+        .financing-block {
+            background: white;
+            border: 2px solid #1D304E;
+            border-radius: 8px;
+            margin: 4px 0;
+            margin-bottom: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+            min-height: 100px;
+        }
+
+        .financing-header {
+            background: linear-gradient(135deg, #1D304E 0%, #3b82f6 100%);
+            color: white;
+            padding: 16px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .financing-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .logo-svg {
+            height: 50px;
+            width: auto;
+            max-width: 100%;
+        }
+
+        .financing-content {
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            min-height: 80px;
+        }
+
+        .financing-text {
+            flex: 1;
+        }
+
+        .financing-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #1D304E;
+            margin-bottom: 6px;
+        }
+
+        .financing-contacts {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .contact-line {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #333;
+        }
+
+        .contact-icon-small {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1D304E;
+        }
+
+        .qr-placeholder {
+            width: 110px;
+            height: 110px;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 11px;
+            text-align: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .qr-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .cta-text {
+            font-size: 11px;
+            color: #1D304E;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>КОМЕРЦІЙНА ПРОПОЗИЦІЯ</h1>
+            <div class="subtitle">Автомобільний транспорт</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Vehicle Information -->
+            <div class="vehicle-info">
+                <div class="vehicle-title">MAN TGM 15 290</div>
+                <div class="vehicle-subtitle">Вантажний автомобіль для комерційного використання</div>
+                
+                <div class="specs-grid">
+                    <!-- Basic Specifications -->
+                    <div class="spec-card">
+                        <h3><i data-lucide="settings" class="lucide-icon"></i>Основні характеристики</h3>
+                        <div class="spec-item">
+                            <span class="spec-label">Марка/Модель:</span>
+                            <span class="spec-value">MAN TGM 15 290</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">VIN:</span>
+                            <span class="spec-value">WMAN16ZZ0MY417832</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Рік виготовлення:</span>
+                            <span class="spec-value">2020</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Пробіг:</span>
+                            <span class="spec-value">559000</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Колір:</span>
+                            <span class="spec-value">Білий</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Країна виробник:</span>
+                            <span class="spec-value">Німеччина</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Технічний стан:</span>
+                            <span class="spec-value">Відмінний</span>
+                        </div>
+                    </div>
+
+                    <!-- Technical Specifications -->
+                    <div class="spec-card">
+                        <h3><i data-lucide="zap" class="lucide-icon"></i>Технічні характеристики</h3>
+                        <div class="spec-item">
+                            <span class="spec-label">Тип кузова:</span>
+                            <span class="spec-value">Вантажний фургон</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Колісна формула:</span>
+                            <span class="spec-value">4×2</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Двигун:</span>
+                            <span class="spec-value">Дизель</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Об'єм двигуна:</span>
+                            <span class="spec-value">6.9</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Потужність:</span>
+                            <span class="spec-value">213.3</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">КПП:</span>
+                            <span class="spec-value">Автомат</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Кількість місць:</span>
+                            <span class="spec-value">2</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Image Gallery -->
+            <div class="image-gallery">
+                <h3><i data-lucide="camera" class="lucide-icon"></i>Фотографії автомобіля</h3>
+                <div class="image-grid">
+                    <div class="image-placeholder">
+                        <img src="" alt="Photo 1" loading="lazy">
+                    </div>
+                    <div class="image-placeholder">
+                        <img src="" alt="Photo 2" loading="lazy">
+                    </div>
+                    <div class="image-placeholder">
+                        <img src="" alt="Photo 3" loading="lazy">
+                    </div>
+                    <div class="image-placeholder">
+                        <img src="" alt="Photo 4" loading="lazy">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 2 Container -->
+            <div class="page-2-container page-break-before">
+                <div class="page-2-content">
+                    <!-- Additional Images Gallery (4 photos) -->
+                    <div class="image-gallery">
+                        <h3><i data-lucide="camera" class="lucide-icon"></i>Фотографії автомобіля</h3>
+                        <div class="image-grid">
+                            <div class="image-placeholder">
+                                <img src="" alt="Photo 5" loading="lazy">
+                            </div>
+                            <div class="image-placeholder">
+                                <img src="" alt="Photo 6" loading="lazy">
+                            </div>
+                            <div class="image-placeholder">
+                                <img src="" alt="Photo 7" loading="lazy">
+                            </div>
+                            <div class="image-placeholder">
+                                <img src="" alt="Photo 8" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pricing Section -->
+                    <div class="pricing-section">
+                        <h3>Вартість та умови</h3>
+                        <div class="price-main">2405600</div>
+                        
+                        <div class="price-details">
+                            <div class="price-item">
+                                <div class="label">Вартість без ПДВ</div>
+                                <div class="value">2004666.67</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="label">Сума ПДВ</div>
+                                <div class="value">400933.33</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="label">Вартість з ПДВ</div>
+                                <div class="value">2405600</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- M-TRUCK Financing Block -->
+                    <div class="financing-block">
+                        <div class="financing-content">
+                            <div class="financing-text">
+                                <div class="financing-title">Фінансування авто | Кредит | Лізинг</div>
+                                <div class="financing-contacts">
+                                    <div class="contact-line">
+                                        <div class="contact-icon-small">
+                                            <i data-lucide="phone" style="width: 14px; height: 14px;"></i>
+                                        </div>
+                                        <span>+38 050 231 13 39</span>
+                                    </div>
+                                    <div class="contact-line">
+                                        <div class="contact-icon-small">
+                                            <i data-lucide="send" style="width: 14px; height: 14px;"></i>
+                                        </div>
+                                        <span>M-Truck_finans</span>
+                                    </div>
+                                </div>
+                                <div class="cta-text">
+                                    Отримати консультацію - Перейди за QR-кодом →
+                                </div>
+                            </div>
+                            <div class="qr-placeholder">
+                                <img src="img/qr/qrcode.webp" alt="QR-код для консультації" class="qr-image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom section with supplier info and footer -->
+                <div class="page-2-footer">
+                    <!-- Supplier Information -->
+                    <div class="supplier-info">
+                        <h3>Інформація про постачальника</h3>
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <div class="contact-icon"><i data-lucide="building"></i></div>
+                                <div>
+                                    <strong>ПП "БРЕЙН КОМПАНІ"</strong><br>
+                                    ЄДРПОУ: 45373226
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon"><i data-lucide="map-pin"></i></div>
+                                <div>
+                                    07400, Київська обл., м. Бровари,<br>
+                                    вул. Січових Стрільців, буд. 11
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="footer">
+                        <div class="footer-logo">
+                            <img src="img/logo/M-TRUCK logo iron.png" alt="M-TRUCK Logo" class="logo-svg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Ініціалізація Lucide іконок
+        lucide.createIcons();
+    </script>
+</body>
+</html>

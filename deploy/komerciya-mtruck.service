@@ -1,0 +1,15 @@
+[Unit]
+Description=Проксі для генератора комерційних пропозицій (запуск за запитом)
+Requires=komerciya_mtruck_app.service
+After=komerciya_mtruck_app.service
+Requires=komerciya_mtruck.socket
+After=komerciya_mtruck.socket
+
+[Service]
+Type=simple
+User=root
+ExecStartPre=/bin/sleep 3
+ExecStart=/usr/lib/systemd/systemd-socket-proxyd --exit-idle-time=300 127.0.0.1:5001
+
+[Install]
+WantedBy=sockets.target

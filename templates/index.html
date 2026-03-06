@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор PDF Комерційних Пропозицій</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1D304E 0%, #3b82f6 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .photos-upload {
+            border: 2px dashed #ddd;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            background: #f9f9f9;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .photos-upload:hover {
+            border-color: #3b82f6;
+            background: #f0f7ff;
+        }
+
+        .photos-preview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .photo-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            background: #f0f0f0;
+            cursor: move;
+            user-select: none;
+        }
+
+        .photo-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .photo-item.drag-over {
+            border: 3px dashed #3b82f6;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-item .remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255,0,0,0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+
+        .btn {
+            background: linear-gradient(135deg, #1D304E 0%, #3b82f6 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .success {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .success.active {
+            display: block;
+        }
+
+        .error {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .error.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #1D304E;
+        }
+
+        .section-title:first-child {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📄 Генератор PDF Комерційних Пропозицій</h1>
+            <p>Заповніть форму для створення професійної комерційної пропозиції</p>
+        </div>
+
+        <div class="form-container">
+            <form id="proposalForm">
+                <!-- Основні характеристики -->
+                <div class="section-title">🚗 Основні характеристики</div>
+                
+                <div class="form-group">
+                    <label>Марка/Модель</label>
+                    <input type="text" name="model" placeholder="Наприклад: MAN TGM 15 290">
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label>VIN номер</label>
+                        <input type="text" name="vin" placeholder="WMAN16ZZ0MY417832">
+                    </div>
+                    <div class="form-group">
+                        <label>Рік виготовлення</label>
+                        <input type="text" name="year" placeholder="2020">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label>Пробіг (км)</label>
+                        <input type="text" name="mileage" placeholder="559000">
+                    </div>
+                    <div class="form-group">
+                        <label>Колір</label>
+                        <input type="text" name="color" placeholder="Білий">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Країна виробник</label>
+                    <input type="text" name="country" placeholder="Німеччина">
+                </div>
+
+                <!-- Технічні характеристики -->
+                <div class="section-title">⚙️ Технічні характеристики</div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label>Тип кузова</label>
+                        <input type="text" name="body_type" placeholder="Вантажний фургон">
+                    </div>
+                    <div class="form-group">
+                        <label>Колісна формула</label>
+                        <input type="text" name="wheel_formula" placeholder="4×2">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label>Тип двигуна</label>
+                        <input type="text" name="engine_type" placeholder="Дизель">
+                    </div>
+                    <div class="form-group">
+                        <label>Об'єм двигуна</label>
+                        <input type="text" name="engine_volume" placeholder="6.9">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label>Потужність</label>
+                        <input type="text" name="power" placeholder="213.3">
+                    </div>
+                    <div class="form-group">
+                        <label>КПП</label>
+                        <input type="text" name="gearbox" placeholder="Автомат">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Кількість місць</label>
+                    <input type="text" name="seats" placeholder="2">
+                </div>
+
+                <!-- Додаткова інформація -->
+                <div class="section-title">ℹ️ Додаткова інформація</div>
+
+                <div class="form-group">
+                    <label>Технічний стан</label>
+                    <input type="text" name="technical_state" placeholder="Відмінний">
+                </div>
+
+                <!-- Фотографії -->
+                <div class="section-title">📸 Фотографії</div>
+
+                <div class="form-group">
+                    <label>Завантажити фото (до 8 шт)</label>
+                    <div class="photos-upload" onclick="document.getElementById('photos').click()">
+                        <div style="font-size: 48px; margin-bottom: 10px;">📷</div>
+                        <div>Натисніть для завантаження фото</div>
+                    </div>
+                    <input type="file" id="photos" multiple accept="image/*" style="display: none;">
+                    <div class="photos-preview" id="photosPreview"></div>
+                </div>
+
+                <!-- Вартість -->
+                <div class="section-title">💰 Вартість та умови</div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label>Вартість з ПДВ (грн)</label>
+                        <input type="text" name="price_with_vat" placeholder="2405600">
+                    </div>
+                    <div class="form-group">
+                        <label>Вартість без ПДВ (грн)</label>
+                        <input type="text" name="price_without_vat" placeholder="2004666.67">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Сума ПДВ (грн)</label>
+                    <input type="text" name="vat" placeholder="400933.33">
+                </div>
+
+                <div class="form-group">
+                    <label>Вартість словами</label>
+                    <input type="text" name="price_words" placeholder="Два мільйони чотириста п'ять тисяч шістсот гривень 00 копійок">
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">
+                    🚀 Згенерувати PDF
+                </button>
+
+                <div class="loading" id="loading">
+                    <p>⏳ Генеруємо PDF... Це може зайняти кілька секунд.</p>
+                </div>
+
+                <div class="success" id="success">
+                    <p>✅ PDF успішно створено!</p>
+                    <a href="#" id="downloadLink" class="btn" style="display: inline-block; text-decoration: none; margin-top: 15px;">
+                        📥 Завантажити PDF
+                    </a>
+                </div>
+
+                <div class="error" id="error">
+                    ❌ Помилка при створенні PDF. Перевірте всі поля.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('proposalForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const success = document.getElementById('success');
+        const error = document.getElementById('error');
+        const photosInput = document.getElementById('photos');
+        const photosPreview = document.getElementById('photosPreview');
+        let uploadedPhotos = [];
+
+        photosInput.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            if (uploadedPhotos.length + files.length > 8) {
+                alert('Максимум 8 фото');
+                return;
+            }
+
+            uploadedPhotos = uploadedPhotos.concat(files);
+            updatePhotosPreview();
+        });
+
+        function updatePhotosPreview() {
+            photosInput.value = '';
+            photosPreview.innerHTML = '';
+            
+            // Завантажуємо фото строго по порядку використовуючи Promise
+            const loadPromises = uploadedPhotos.map((file, index) => {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        resolve({
+                            index: index,
+                            dataUrl: e.target.result,
+                            file: file
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+            
+            // Після завантаження всіх фото, додаємо їх по порядку
+            Promise.all(loadPromises).then(results => {
+                // Сортуємо за індексом для гарантії правильного порядку
+                results.sort((a, b) => a.index - b.index);
+                
+                results.forEach((result) => {
+                    const photoItem = document.createElement('div');
+                    photoItem.className = 'photo-item';
+                    photoItem.draggable = true;
+                    photoItem.dataset.index = result.index;
+                    photoItem.innerHTML = `
+                        <img src="${result.dataUrl}" alt="Photo ${result.index + 1}">
+                        <button type="button" class="remove" onclick="removePhoto(${result.index})">×</button>
+                    `;
+                    
+                    // Додаємо обробники drag & drop
+                    photoItem.addEventListener('dragstart', handleDragStart);
+                    photoItem.addEventListener('dragover', handleDragOver);
+                    photoItem.addEventListener('drop', handleDrop);
+                    photoItem.addEventListener('dragend', handleDragEnd);
+                    photoItem.addEventListener('dragenter', handleDragEnter);
+                    photoItem.addEventListener('dragleave', handleDragLeave);
+                    
+                    photosPreview.appendChild(photoItem);
+                });
+            });
+        }
+
+        let draggedElement = null;
+        let draggedIndex = null;
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            draggedIndex = parseInt(this.dataset.index);
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            if (this !== draggedElement) {
+                this.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            if (draggedElement !== this) {
+                const dropIndex = parseInt(this.dataset.index);
+                
+                // Переміщуємо файли в масиві
+                const temp = uploadedPhotos[draggedIndex];
+                uploadedPhotos.splice(draggedIndex, 1);
+                uploadedPhotos.splice(dropIndex, 0, temp);
+                
+                // Оновлюємо відображення
+                updatePhotosPreview();
+            }
+            
+            this.classList.remove('drag-over');
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            const items = document.querySelectorAll('.photo-item');
+            items.forEach(item => item.classList.remove('drag-over'));
+        }
+
+        function removePhoto(index) {
+            uploadedPhotos.splice(index, 1);
+            updatePhotosPreview();
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            loading.classList.add('active');
+            success.classList.remove('active');
+            error.classList.remove('active');
+            submitBtn.disabled = true;
+
+            const formData = new FormData();
+            const formValues = new FormData(form);
+            
+            for (const [key, value] of formValues.entries()) {
+                formData.append(key, value);
+            }
+
+            // Завантажуємо фото
+            uploadedPhotos.forEach((file, index) => {
+                formData.append('photos', file);
+            });
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    success.classList.add('active');
+                    // Оновлюємо посилання для завантаження
+                    document.getElementById('downloadLink').href = result.download_url;
+                    // Не скидаємо форму, щоб можна було перегенерувати PDF
+                } else {
+                    error.innerHTML = '❌ ' + result.error;
+                    error.classList.add('active');
+                }
+            } catch (err) {
+                error.innerHTML = '❌ Помилка: ' + err.message;
+                error.classList.add('active');
+            } finally {
+                loading.classList.remove('active');
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
+
