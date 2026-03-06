@@ -4,12 +4,12 @@
 
 set -e
 
-APP_NAME="komerciya_mtruck"
-APPS_DIR="/root/apps"
-APP_DIR="${APPS_DIR}/${APP_NAME}"
+# APP_DIR — каталог проекту (батьківський до deploy/)
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+APP_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 VENV_DIR="${APP_DIR}/venv"
 
-echo "=== Деплой ${APP_NAME} (on-demand) ==="
+echo "=== Деплой komerciya-mtruck (on-demand) ==="
 
 # Перевірка наявності Python 3
 if ! command -v python3 &> /dev/null; then
@@ -44,10 +44,11 @@ playwright install-deps chromium 2>/dev/null || true
 # Створення папок uploads та output
 mkdir -p "${APP_DIR}/uploads" "${APP_DIR}/output"
 
-# Копіювання systemd unit-файлів
-cp "${APP_DIR}/komerciya-mtruck.socket" /etc/systemd/system/komerciya_mtruck.socket
-cp "${APP_DIR}/komerciya-mtruck.service" /etc/systemd/system/komerciya_mtruck.service
-cp "${APP_DIR}/komerciya-mtruck-app.service" /etc/systemd/system/komerciya_mtruck_app.service
+# Копіювання systemd unit-файлів (з підстановкою APP_DIR в app service)
+sed "s|__APP_DIR__|${APP_DIR}|g" "${APP_DIR}/deploy/komerciya-mtruck-app.service" > /tmp/komerciya-mtruck-app.service
+cp "${APP_DIR}/deploy/komerciya-mtruck.socket" /etc/systemd/system/komerciya_mtruck.socket
+cp "${APP_DIR}/deploy/komerciya-mtruck.service" /etc/systemd/system/komerciya_mtruck.service
+cp /tmp/komerciya-mtruck-app.service /etc/systemd/system/komerciya_mtruck_app.service
 systemctl daemon-reload
 
 # Увімкнення сокета (запуск за запитом — сервіс стартує тільки при переході по посиланню)
