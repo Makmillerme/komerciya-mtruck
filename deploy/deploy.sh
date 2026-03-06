@@ -9,7 +9,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 APP_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 VENV_DIR="${APP_DIR}/venv"
 
-echo "=== Деплой komerciya-mtruck (on-demand) ==="
+echo "=== Деплой komerciya-mtruck ==="
 
 # Перевірка наявності Python 3
 if ! command -v python3 &> /dev/null; then
@@ -17,11 +17,13 @@ if ! command -v python3 &> /dev/null; then
     exit 1
 fi
 
-# Перевірка systemd-socket-proxyd (потрібен systemd >= 246)
-if ! command -v systemd-socket-proxyd &> /dev/null; then
-    echo "Помилка: systemd-socket-proxyd не знайдено. Потрібен systemd >= 246."
-    echo "Перевірка: systemctl --version"
-    exit 1
+# Визначення режиму: on-demand (systemd >= 246) або простий (постійний)
+USE_ONDEMAND=false
+if command -v systemd-socket-proxyd &> /dev/null; then
+    USE_ONDEMAND=true
+    echo "Режим: on-demand (systemd-socket-proxyd знайдено)"
+else
+    echo "Режим: простий (постійний) — systemd-socket-proxyd не знайдено"
 fi
 
 # Створення venv якщо не існує
@@ -44,23 +46,30 @@ playwright install-deps chromium 2>/dev/null || true
 # Створення папок uploads та output
 mkdir -p "${APP_DIR}/uploads" "${APP_DIR}/output"
 
-# Копіювання systemd unit-файлів (з підстановкою APP_DIR в app service)
-sed "s|__APP_DIR__|${APP_DIR}|g" "${APP_DIR}/deploy/komerciya-mtruck-app.service" > /tmp/komerciya-mtruck-app.service
-cp "${APP_DIR}/deploy/komerciya-mtruck.socket" /etc/systemd/system/komerciya_mtruck.socket
-cp "${APP_DIR}/deploy/komerciya-mtruck.service" /etc/systemd/system/komerciya_mtruck.service
-cp /tmp/komerciya-mtruck-app.service /etc/systemd/system/komerciya_mtruck_app.service
+# Копіювання systemd unit-файлів
 systemctl daemon-reload
 
-# Увімкнення сокета (запуск за запитом — сервіс стартує тільки при переході по посиланню)
-systemctl enable komerciya_mtruck.socket
-systemctl start komerciya_mtruck.socket
-
-# Зупинка backend якщо він працював (тепер він запускатиметься on-demand)
-systemctl stop komerciya_mtruck.service 2>/dev/null || true
-systemctl stop komerciya_mtruck_app.service 2>/dev/null || true
+if [ "$USE_ONDEMAND" = true ]; then
+    sed "s|__APP_DIR__|${APP_DIR}|g" "${APP_DIR}/deploy/komerciya-mtruck-app.service" > /tmp/komerciya-mtruck-app.service
+    cp "${APP_DIR}/deploy/komerciya-mtruck.socket" /etc/systemd/system/komerciya_mtruck.socket
+    cp "${APP_DIR}/deploy/komerciya-mtruck.service" /etc/systemd/system/komerciya_mtruck.service
+    cp /tmp/komerciya-mtruck-app.service /etc/systemd/system/komerciya_mtruck_app.service
+    systemctl daemon-reload
+    systemctl enable komerciya_mtruck.socket
+    systemctl start komerciya_mtruck.socket
+    systemctl stop komerciya_mtruck.service 2>/dev/null || true
+    systemctl stop komerciya_mtruck_app.service 2>/dev/null || true
+    echo "Режим: on-demand — сервіс стартує при переході по посиланню, зупиняється через 5 хв"
+else
+    systemctl stop komerciya_mtruck.socket 2>/dev/null || true
+    systemctl disable komerciya_mtruck.socket 2>/dev/null || true
+    sed "s|__APP_DIR__|${APP_DIR}|g" "${APP_DIR}/deploy/komerciya-mtruck-simple.service" > /etc/systemd/system/komerciya_mtruck.service
+    systemctl daemon-reload
+    systemctl enable komerciya_mtruck.service
+    systemctl restart komerciya_mtruck.service
+    echo "Режим: простий — сервіс працює постійно"
+fi
 
 echo "=== Деплой завершено ==="
-echo "Режим: on-demand — сервіс запускається тільки при переході по посиланню"
-echo "Після 5 хв без активності — автоматично зупиняється"
 echo "URL: http://91.239.232.91:5000"
-echo "Перевірка сокета: systemctl status komerciya_mtruck.socket"
+echo "Статус: systemctl status komerciya_mtruck"

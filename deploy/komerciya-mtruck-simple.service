@@ -1,0 +1,15 @@
+[Unit]
+Description=Генератор PDF комерційних пропозицій M-Truck (простий режим)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=__APP_DIR__
+Environment="PATH=__APP_DIR__/venv/bin"
+ExecStart=__APP_DIR__/venv/bin/gunicorn --workers 1 --bind 0.0.0.0:5000 --timeout 120 app_simple:app
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
